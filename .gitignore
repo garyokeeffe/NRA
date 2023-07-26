@@ -161,3 +161,4 @@ cython_debug/
 
 notes.json
 notes_with_embeddings.json
+.chroma
