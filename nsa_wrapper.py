@@ -32,3 +32,11 @@ def download_unfiltered_nostr_data(n_samples):
     filters.limit = n_samples
     relays = ['wss://relay.nostr.band']
     return fetch_notes(base_url, filters, relays)
+
+def download_author_notes(author_pubkey, n_samples):
+	base_url = os.environ['BASE_URL']
+	filters = Filter()
+	filters.limit = n_samples
+	filters.authors = [author_pubkey]
+	relays = ['wss://relay.nostr.band']
+	return fetch_notes(base_url, filters, relays)
