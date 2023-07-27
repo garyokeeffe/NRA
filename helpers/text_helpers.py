@@ -1,31 +1,8 @@
 import json
 import numpy as np
-from nsa_wrapper import download_author_notes
-from openai_wrapper import embedding_annotate
+from api_wrappers.nsa_wrapper import download_author_notes
+from api_wrappers.openai_wrapper import embedding_annotate
 import re
-
-
-def save(data_object, name):
-    with open(f'{name}.json', 'w') as f:
-        json.dump(data_object, f)
-
-def load(name):
-    with open(f'{name}.json', 'r') as f:
-        return json.load(f)
-    
-
-def get_embeddings_array(notes_with_embeddings):
-    embeddings = [note['embedding'] for note in notes_with_embeddings.values()]
-    return np.array(embeddings)
-
-def initial_semantic_focus(author_pubkey):
-    notes = download_author_notes(author_pubkey, 20)
-    tag_media_notes(notes)
-    tag_nostr_notes(notes)
-    embedded_notes = embedding_annotate(notes)
-    embeddings = get_embeddings_array(embedded_notes)
-    return embeddings.mean(axis=0).tolist()
-
 
 def filter_long_and_short_notes(notes):
     max_text_length = 1000
@@ -63,10 +40,24 @@ def tag_nostr_notes(notes):
 
     return notes
 
+
+def generate_formatted_query_result(query_result):
+    result_str = "-" * 50
+    result_str += '\nNostr Note: https://primal.net/e/' + query_result['ids']
+    result_str += '\nAuthor: ' + query_result['metadatas']['author']
+    result_str += '\n' + "-" * 50
+    result_str += '\n' + query_result['documents']
+    result_str += '\n' + "-" * 50
+    return result_str
+
 def print_formatted_query_result(query_result):
-	print("-" * 50)
-	print('Nostr Note: ' + query_result['ids'])
-	print('Author: ' + query_result['metadatas']['author'])
-	print("-" * 50)
-	print(query_result['documents'])
-	print("-" * 50)
+	print(generate_formatted_query_result(query_result))
+        
+
+def generate_formatted_query_object(query_result):
+    result_dict = {
+        'link': "https://primal.net/e/" + query_result['ids'],
+        'author': query_result['metadatas']['author'],
+        'documents': query_result['documents']
+    }
+    return result_dict

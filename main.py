@@ -1,7 +1,8 @@
-from nsa_wrapper import download_unfiltered_nostr_data
-from openai_wrapper import embedding_annotate
-from organization_helpers import save, load, initial_semantic_focus, filter_long_and_short_notes, tag_media_notes, tag_nostr_notes, print_formatted_query_result
-from chromadb_wrapper import set_up_database, upload_embeddings_to_database, get_random_note
+from api_wrappers.nsa_wrapper import download_unfiltered_nostr_data
+from api_wrappers.openai_wrapper import embedding_annotate
+from helpers.text_helpers import print_formatted_query_result
+from helpers.misc_helpers import save, load, initial_semantic_focus
+from api_wrappers.chromadb_wrapper import set_up_database, upload_embeddings_to_database, get_random_note
 
 
 
@@ -26,15 +27,11 @@ save(notes_with_embeddings, "notes_with_embeddings")
 '''
 notes_with_embeddings = load("notes_with_embeddings")
 
-
 database = set_up_database()
 
-database = upload_embeddings_to_database(database, notes_with_embeddings)
-
+upload_embeddings_to_database(database, notes_with_embeddings)
 
 semantic_focus = initial_semantic_focus('npub10mgeum509kmlayzuvxhkl337zuh4x2knre8ak2uqhpcra80jdttqqvehf6')
-
-
 
 while True:
 	query_result = get_random_note(database,semantic_focus)

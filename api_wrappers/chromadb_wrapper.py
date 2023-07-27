@@ -1,5 +1,5 @@
 import chromadb
-from openai_wrapper import get_embedding
+from api_wrappers.openai_wrapper import get_embedding
 import random
 
 
