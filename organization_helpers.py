@@ -20,8 +20,8 @@ def get_embeddings_array(notes_with_embeddings):
 
 def initial_semantic_focus(author_pubkey):
     notes = download_author_notes(author_pubkey, 20)
-    filter_media_notes(notes)
-    filter_nostr_notes(notes)
+    tag_media_notes(notes)
+    tag_nostr_notes(notes)
     embedded_notes = embedding_annotate(notes)
     embeddings = get_embeddings_array(embedded_notes)
     return embeddings.mean(axis=0).tolist()
@@ -40,7 +40,7 @@ def filter_long_and_short_notes(notes):
 
 
 
-def filter_media_notes(notes):
+def tag_media_notes(notes):
     media_types = [".gif", "https", "youtube.com", ".png", ".jpg", ".webp", "spotify", ".mov"]
 
     url_pattern = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -53,7 +53,7 @@ def filter_media_notes(notes):
 
     return notes
 
-def filter_nostr_notes(notes):
+def tag_nostr_notes(notes):
     media_types = ["nostr:"]
 
     for k, v in notes.items():
@@ -62,3 +62,11 @@ def filter_nostr_notes(notes):
             v['content'] = re.sub(pattern, '[nostr_object]', v['content'])
 
     return notes
+
+def print_formatted_query_result(query_result):
+	print("-" * 50)
+	print('Nostr Note: ' + query_result['ids'])
+	print('Author: ' + query_result['metadatas']['author'])
+	print("-" * 50)
+	print(query_result['documents'])
+	print("-" * 50)
