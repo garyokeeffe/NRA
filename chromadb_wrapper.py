@@ -19,12 +19,14 @@ def upload_embeddings_to_database(database, notes_with_embeddings):
     return database
    
 
-def query_database_string(database, text, n_results = 5):
-    embedding = get_embedding(text)
+def query_database_embedding(database, embedding, n_results = 5):
     return database.query(
         query_embeddings=[embedding],
         n_results=n_results,
         # where={"metadata_field": "is_equal_to_this"}, # optional filter
         # where_document={"$contains":"search_string"}  # optional filter
-    )  
+    )
 
+def query_database_string(database, text, n_results = 5):
+    embedding = get_embedding(text)
+    return query_database_embedding(database, embedding, n_results)
