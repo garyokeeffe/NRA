@@ -5,7 +5,7 @@ import random
 
 def set_up_database():
     client = chromadb.Client()
-    return client.create_collection("nostr_test")
+    return client.create_collection("NRA_Example")
 
 def upload_embeddings_to_database(database, notes_with_embeddings):
     for note in notes_with_embeddings:
@@ -31,7 +31,7 @@ def query_database_string(database, text, n_results = 5):
     embedding = get_embedding(text)
     return query_database_embedding(database, embedding, n_results)
 
-def get_random_note(database, semantic_focus, n_options = 10):
+def get_random_note(database, semantic_focus, n_options = 20):
     list_of_results = query_database_embedding(database, semantic_focus, n_options)
     min_size = min(len(v[0]) for v in list_of_results.values() if v is not None)
     random_choice = random.randint(0, min_size-1)

@@ -57,13 +57,22 @@ def update_plot():
     total = likes + dislikes + skips
     ax.clear()  # Clear the previous plot
     if total > 0:
-        fractions.append([likes/total, dislikes/total, skips/total])
+        percentages = [100 * f for f in [likes/total, dislikes/total, skips/total]]  # Convert fractions to percentages
+        fractions.append(percentages)
         ax.plot(np.array(fractions))
-        ax.legend(['Likes', 'Dislike', 'Skip'])
+        ax.legend(['Like', 'Dislike', 'Skip'])
     else:
         ax.plot([])  # Create an empty plot
+
+    # Add labels and title
+    ax.set_xlabel('Time')
+    ax.set_ylabel('%')  # Update y-label to 'Percentage'
+    ax.set_title('Like, Dislike, and Skip % Over Time')
+
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.BOTTOM)  # Pack the canvas here
+
+
 
 
 def display_new_note():
@@ -87,7 +96,7 @@ def display_new_note():
 def like_note():
     global semantic_focus
     global likes
-    semantic_focus  = [.9*x + .1*y  for x, y in zip(semantic_focus, query_result['embeddings'])]
+    semantic_focus  = [.8*x + .2*y  for x, y in zip(semantic_focus, query_result['embeddings'])]
     likes += 1
     display_new_note()
     root.after(100, update_plot)
@@ -97,7 +106,7 @@ def like_note():
 def dislike_note():
     global semantic_focus
     global dislikes
-    semantic_focus  = [1.1*x + -.1*y  for x, y in zip(semantic_focus, query_result['embeddings'])]
+    semantic_focus  = [1.2*x + -.2*y  for x, y in zip(semantic_focus, query_result['embeddings'])]
     dislikes += 1
     display_new_note()
     root.after(100, update_plot)
